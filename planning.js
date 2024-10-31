@@ -38,6 +38,28 @@ class Aeroplane {
     }
 }
 
+function createAirports(data) {
+    return data.map(function(row) {
+        var name = row[0];
+        var code = row[1];
+        var distanceFromMAN = parseFloat(row[2]);
+        var distanceFromLGW = parseFloat(row[3]);
+        return new Airport(name, code, distanceFromMAN, distanceFromLGW);
+    });
+}
+
+function createAeroplanes(data) {
+    return data.map(function(row) {
+        var type = row[0];
+        var runningCostPerSeat = parseFloat(row[1]);
+        var maxFlightRange = parseFloat(row[2]);
+        var totalSeats = parseInt(row[3], 10);
+        return new Aeroplane(type, runningCostPerSeat, maxFlightRange, totalSeats);
+    });
+}
+
+
+
 
 // Usage example
 const airportsData = readCsv('airports.csv');
