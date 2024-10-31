@@ -58,7 +58,7 @@ function createAeroplanes(data) {
     });
 }
 
-function calculateRevenue(bookings, prices) {
+function calculateIncome(bookings, prices) {
     const economyIncome = bookings.economy * prices.economy;
     const businessIncome = bookings.business * prices.business;
     const firstClassIncome = bookings.firstClass * prices.firstClass;
@@ -71,33 +71,20 @@ function calculateCost(aeroplane, distance, totalSeats) {
 }
 
 function displayFlightDetails(flight) {
-    const airport = flight.airport;
-    const aeroplane = flight.aeroplane;
-    const bookings = flight.bookings;
-    const prices = flight.prices;
+    const { airport, aeroplane, bookings, prices } = flight;
 
     const totalIncome = calculateIncome(bookings, prices);
-    const totalSeats = getTotalSeats(bookings);
+    
+    const totalSeats = bookings.economy + bookings.business + bookings.firstClass;
     const totalCost = calculateCost(aeroplane, airport.distanceFromMAN, totalSeats);
-    const profitOrLoss = calculateProfitOrLoss(totalIncome, totalCost);
 
-    printFlightSummary(airport, aeroplane, bookings, totalIncome, totalCost, profitOrLoss);
-}
-
-function getTotalSeats(bookings) {
-    return bookings.economy + bookings.business + bookings.firstClass;
-}
-
-function calculateProfitOrLoss(totalIncome, totalCost) {
-    return (totalIncome - totalCost).toFixed(2);
-}
-
-function printFlightSummary(airport, aeroplane, bookings, totalIncome, totalCost, profitOrLoss) {
+    const profitOrLoss = (totalIncome - totalCost).toFixed(2);
+    
     console.log(`Flight to ${airport.name} (${airport.code})`);
     console.log(`Aircraft Model: ${aeroplane.model}`);
     console.log(`Bookings: Economy: ${bookings.economy}, Business: ${bookings.business}, First Class: ${bookings.firstClass}`);
     console.log(`Total Income: £${totalIncome.toFixed(2)}`);
-    console.log(`Total Cost: £${totalCost.toFixed(2)}`);
+    console.log(`Total Cost: £${totalCost}`);
     console.log(`Expected Profit/Loss: £${profitOrLoss}`);
 }
 
