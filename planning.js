@@ -31,30 +31,25 @@ class Airport {
 }
 
 class Aeroplane {
-    constructor(model, costPerMile, capacity) {
+    constructor(model, runningCostPerSeat, maxFlightRange, economySeats, businessSeats, firstClassSeats) {
         this.model = model;
-        this.costPerMile = costPerMile;
-        this.capacity = capacity;
+        this.runningCostPerSeatPer100km = parseFloat(runningCostPerSeat.replace('£', '').replace(',', ''));
+        this.maxFlightRange = maxFlightRange;
+        this.economySeats = economySeats;
+        this.businessSeats = businessSeats;
+        this.firstClassSeats = firstClassSeats;
     }
 }
 
 function createAirports(data) {
     return data.map(function(row) {
-        var name = row[0];
-        var code = row[1];
-        var distanceFromMAN = parseFloat(row[2]);
-        var distanceFromLGW = parseFloat(row[3]);
-        return new Airport(name, code, distanceFromMAN, distanceFromLGW);
+        return new Airport(row[1], row[0], parseFloat(row[2]), parseFloat(row[3]));
     });
 }
 
 function createAeroplanes(data) {
     return data.map(function(row) {
-        var type = row[0];
-        var runningCostPerSeat = parseFloat(row[1]);
-        var maxFlightRange = parseFloat(row[2]);
-        var totalSeats = parseInt(row[3], 10);
-        return new Aeroplane(type, runningCostPerSeat, maxFlightRange, totalSeats);
+        return new Aeroplane(row[0], row[1], parseFloat(row[2]), parseInt(row[3]), parseInt(row[4]), parseInt(row[5]));
     });
 }
 
@@ -66,7 +61,7 @@ function calculateIncome(bookings, prices) {
 }
 
 function calculateCost(aeroplane, distance, totalSeats) {
-    const costPerSeat = (aeroplane.costPerSeatPer100km * (distance / 100)).toFixed(2);
+    const costPerSeat = (aeroplane.runningCostPerSeatPer100km * (distance / 100)).toFixed(2);
     return (costPerSeat * totalSeats).toFixed(2);
 }
 
@@ -116,6 +111,8 @@ function main() {
         displayFlightDetails(flight);
     });
 }
+
+main();
 
 
 // Usage example
