@@ -65,6 +65,11 @@ function calculateRevenue(bookings, prices) {
     return economyIncome + businessIncome + firstClassIncome;
 }
 
+function calculateCost(aeroplane, distance, totalSeats) {
+    const costPerSeat = (aeroplane.costPerSeatPer100km * (distance / 100)).toFixed(2);
+    return (costPerSeat * totalSeats).toFixed(2);
+}
+
 
 // Usage example
 const airportsData = readCsv('airports.csv');
