@@ -70,6 +70,37 @@ function calculateCost(aeroplane, distance, totalSeats) {
     return (costPerSeat * totalSeats).toFixed(2);
 }
 
+function displayFlightDetails(flight) {
+    const airport = flight.airport;
+    const aeroplane = flight.aeroplane;
+    const bookings = flight.bookings;
+    const prices = flight.prices;
+
+    const totalIncome = calculateIncome(bookings, prices);
+    const totalSeats = getTotalSeats(bookings);
+    const totalCost = calculateCost(aeroplane, airport.distanceFromMAN, totalSeats);
+    const profitOrLoss = calculateProfitOrLoss(totalIncome, totalCost);
+
+    printFlightSummary(airport, aeroplane, bookings, totalIncome, totalCost, profitOrLoss);
+}
+
+function getTotalSeats(bookings) {
+    return bookings.economy + bookings.business + bookings.firstClass;
+}
+
+function calculateProfitOrLoss(totalIncome, totalCost) {
+    return (totalIncome - totalCost).toFixed(2);
+}
+
+function printFlightSummary(airport, aeroplane, bookings, totalIncome, totalCost, profitOrLoss) {
+    console.log(`Flight to ${airport.name} (${airport.code})`);
+    console.log(`Aircraft Model: ${aeroplane.model}`);
+    console.log(`Bookings: Economy: ${bookings.economy}, Business: ${bookings.business}, First Class: ${bookings.firstClass}`);
+    console.log(`Total Income: £${totalIncome.toFixed(2)}`);
+    console.log(`Total Cost: £${totalCost.toFixed(2)}`);
+    console.log(`Expected Profit/Loss: £${profitOrLoss}`);
+}
+
 
 // Usage example
 const airportsData = readCsv('airports.csv');
