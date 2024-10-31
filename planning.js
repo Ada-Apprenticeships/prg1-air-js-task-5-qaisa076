@@ -58,7 +58,12 @@ function createAeroplanes(data) {
     });
 }
 
-
+function calculateRevenue(bookings, prices) {
+    const economyIncome = bookings.economy * prices.economy;
+    const businessIncome = bookings.business * prices.business;
+    const firstClassIncome = bookings.firstClass * prices.firstClass;
+    return economyIncome + businessIncome + firstClassIncome;
+}
 
 
 // Usage example
