@@ -88,6 +88,35 @@ function displayFlightDetails(flight) {
     console.log(`Expected Profit/Loss: £${profitOrLoss}`);
 }
 
+function main() {
+    const airportData = readCsv('airports.csv');
+    const aeroplaneData = readCsv('aeroplanes.csv');
+    const validFlightData = readCsv('valid_flight_data.csv');
+
+    const airports = createAirports(airportData);
+    const aeroplanes = createAeroplanes(aeroplaneData);
+
+    validFlightData.forEach(row => {
+        const airport = airports.find(a => a.code === row[1]);
+        const aeroplane = aeroplanes.find(a => a.model === row[2]);
+
+        const bookings = {
+            economy: parseInt(row[3]),
+            business: parseInt(row[4]),
+            firstClass: parseInt(row[5])
+        };
+
+        const prices = {
+            economy: parseFloat(row[6]),
+            business: parseFloat(row[7]),
+            firstClass: parseFloat(row[8])
+        };
+
+        const flight = { airport, aeroplane, bookings, prices };
+        displayFlightDetails(flight);
+    });
+}
+
 
 // Usage example
 const airportsData = readCsv('airports.csv');
