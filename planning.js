@@ -65,22 +65,20 @@ function calculateCost(aeroplane, distance, totalSeats) {
     return (costPerSeat * totalSeats).toFixed(2);
 }
 
-function displayFlightDetails(flight) {
+function formatFlightDetails(flight) {
     const { airport, aeroplane, bookings, prices } = flight;
 
     const totalIncome = calculateIncome(bookings, prices);
-    
     const totalSeats = bookings.economy + bookings.business + bookings.firstClass;
     const totalCost = calculateCost(aeroplane, airport.distanceFromMAN, totalSeats);
-
     const profitOrLoss = (totalIncome - totalCost).toFixed(2);
-    
-    console.log(`Flight to ${airport.name} (${airport.code})`);
-    console.log(`Aircraft Model: ${aeroplane.model}`);
-    console.log(`Bookings: Economy: ${bookings.economy}, Business: ${bookings.business}, First Class: ${bookings.firstClass}`);
-    console.log(`Total Income: £${totalIncome.toFixed(2)}`);
-    console.log(`Total Cost: £${totalCost}`);
-    console.log(`Expected Profit/Loss: £${profitOrLoss}`);
+
+    return `Flight to ${airport.name} (${airport.code})\n` +
+           `Aircraft Model: ${aeroplane.model}\n` +
+           `Bookings: Economy: ${bookings.economy}, Business: ${bookings.business}, First Class: ${bookings.firstClass}\n` +
+           `Total Income: £${totalIncome.toFixed(2)}\n` +
+           `Total Cost: £${totalCost}\n` +
+           `Expected Profit/Loss: £${profitOrLoss}\n`;
 }
 
 function main() {
@@ -90,6 +88,8 @@ function main() {
 
     const airports = createAirports(airportData);
     const aeroplanes = createAeroplanes(aeroplaneData);
+
+    const flightDetails = [];
 
     validFlightData.forEach(row => {
         const airport = airports.find(a => a.code === row[1]);
@@ -108,10 +108,12 @@ function main() {
         };
 
         const flight = { airport, aeroplane, bookings, prices };
-        displayFlightDetails(flight);
+        flightDetails.push(formatFlightDetails(flight));
     });
-}
 
+    const outputContent = flightDetails.join('\n');
+    fs.writeFileSync('flights.csv', outputContent, { encoding: 'utf-8' });
+}
 main();
 
 
