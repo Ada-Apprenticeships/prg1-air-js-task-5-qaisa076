@@ -30,6 +30,13 @@ class Airport {
     }
 }
 
+class Aeroplane {
+    constructor(model, costPerMile, capacity) {
+        this.model = model;
+        this.costPerMile = costPerMile;
+        this.capacity = capacity;
+    }
+}
 
 
 // Usage example
