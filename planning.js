@@ -21,6 +21,17 @@ function readCsv(filename, delimiter = ',') {
     }
 }
 
+class Airport {
+    constructor(name, code, distanceFromMAN, distanceFromLGW) {
+        this.name = name;
+        this.code = code;
+        this.distanceFromMAN = distanceFromMAN;
+        this.distanceFromLGW = distanceFromLGW;
+    }
+}
+
+
+
 // Usage example
 const airportsData = readCsv('airports.csv');
 if (airportsData) {
