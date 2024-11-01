@@ -1,0 +1,29 @@
+Flight from MAN to JFK using Medium narrow body:
+Error: Medium narrow body doesn't have the range to fly to John F Kennedy International
+
+Flight from LGW to ORY using Large narrow body:
+Error: Too many economy seats booked (200 > 180)
+
+Flight from MAN to MAD using Medium narrow body:
+Error: Too many first-class seats booked (2 > 0)
+
+Flight from LGW to AMS using Medium narrow body:
+Error: Too many economy seats booked (180 > 160)
+
+Flight from MAN to CAI using Large narrow body:
+Error: Too many business seats booked (25 > 20)
+
+Flight from LGW to JFKKK using Medium wide body:
+Error: Invalid airport code (JFKKK)
+
+Flight from MAN to ORY using Medium narrow body:
+Error: Too many economy seats booked (165 > 160)
+
+Flight from LGW to MAD using Large narrow body:
+Error: Too many business seats booked (22 > 20)
+
+Flight from MAN to AMSSS using Medium narrow body:
+Error: Invalid airport code (AMSSS)
+
+Flight from LGW to CAI using Medium wide body:
+Error: Too many economy seats booked (385 > 380)

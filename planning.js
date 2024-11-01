@@ -42,80 +42,81 @@ class Aeroplane {
 }
 
 function createAirports(data) {
-    return data.map(function(row) {
-        return new Airport(row[1], row[0], parseFloat(row[2]), parseFloat(row[3]));
-    });
+    return data.map(row => new Airport(row[1], row[0], parseFloat(row[2]), parseFloat(row[3])));
 }
 
 function createAeroplanes(data) {
-    return data.map(function(row) {
-        return new Aeroplane(row[0], row[1], parseFloat(row[2]), parseInt(row[3]), parseInt(row[4]), parseInt(row[5]));
-    });
+    return data.map(row => new Aeroplane(row[0], row[1], parseFloat(row[2]), parseInt(row[3]), parseInt(row[4]), parseInt(row[5])));
 }
 
-function calculateIncome(bookings, prices) {
-    const economyIncome = bookings.economy * prices.economy;
-    const businessIncome = bookings.business * prices.business;
-    const firstClassIncome = bookings.firstClass * prices.firstClass;
-    return economyIncome + businessIncome + firstClassIncome;
+function validateFlight(flight, airports, aeroplanes) {
+    const airport = airports.find(a => a.code === flight[1]);
+    const aeroplane = aeroplanes.find(a => a.model === flight[2]);
+    
+    if (!airport) {
+        return `Error: Invalid airport code (${flight[1]})`;
+    }
+
+    if (!aeroplane) {
+        return `Error: Invalid aircraft code (${flight[2]})`;
+    }
+
+    const distance = flight[0] === 'MAN' ? airport.distanceFromMAN : airport.distanceFromLGW;
+
+    if (distance > aeroplane.maxFlightRange) {
+        return `Error: ${aeroplane.model} doesn't have the range to fly to ${airport.name}`;
+    }
+
+    const economyBooked = parseInt(flight[3]);
+    const businessBooked = parseInt(flight[4]);
+    const firstClassBooked = parseInt(flight[5]);
+    const totalSeats = economyBooked + businessBooked + firstClassBooked;
+
+    if (economyBooked > aeroplane.economySeats) {
+        return `Error: Too many economy seats booked (${economyBooked} > ${aeroplane.economySeats})`;
+    }
+
+    if (businessBooked > aeroplane.businessSeats) {
+        return `Error: Too many business seats booked (${businessBooked} > ${aeroplane.businessSeats})`;
+    }
+
+    if (firstClassBooked > aeroplane.firstClassSeats) {
+        return `Error: Too many first-class seats booked (${firstClassBooked} > ${aeroplane.firstClassSeats})`;
+    }
+
+    if (totalSeats > (aeroplane.economySeats + aeroplane.businessSeats + aeroplane.firstClassSeats)) {
+        return `Error: Too many total seats booked (${totalSeats} > ${aeroplane.economySeats + aeroplane.businessSeats + aeroplane.firstClassSeats})`;
+    }
+
+    return "Valid flight"; // Placeholder for valid flights; adjust as needed.
 }
 
-function calculateCost(aeroplane, distance, totalSeats) {
-    const costPerSeat = (aeroplane.runningCostPerSeatPer100km * (distance / 100)).toFixed(2);
-    return (costPerSeat * totalSeats).toFixed(2);
-}
-
-function formatFlightDetails(flight) {
-    const { airport, aeroplane, bookings, prices } = flight;
-
-    const totalIncome = calculateIncome(bookings, prices);
-    const totalSeats = bookings.economy + bookings.business + bookings.firstClass;
-    const totalCost = calculateCost(aeroplane, airport.distanceFromMAN, totalSeats);
-    const profitOrLoss = (totalIncome - totalCost).toFixed(2);
-
-    return `Flight to ${airport.name} (${airport.code})\n` +
-           `Aircraft Model: ${aeroplane.model}\n` +
-           `Bookings: Economy: ${bookings.economy}, Business: ${bookings.business}, First Class: ${bookings.firstClass}\n` +
-           `Total Income: £${totalIncome.toFixed(2)}\n` +
-           `Total Cost: £${totalCost}\n` +
-           `Expected Profit/Loss: £${profitOrLoss}\n`;
+function formatFlightError(flight, error) {
+    return `Flight from ${flight[0]} to ${flight[1]} using ${flight[2]}:\n${error}\n`;
 }
 
 function main() {
     const airportData = readCsv('airports.csv');
     const aeroplaneData = readCsv('aeroplanes.csv');
-    const validFlightData = readCsv('valid_flight_data.csv');
+    const invalidFlightData = readCsv('invalid_flight_data.csv');
 
     const airports = createAirports(airportData);
     const aeroplanes = createAeroplanes(aeroplaneData);
 
-    const flightDetails = [];
+    const flightErrors = [];
 
-    validFlightData.forEach(row => {
-        const airport = airports.find(a => a.code === row[1]);
-        const aeroplane = aeroplanes.find(a => a.model === row[2]);
-
-        const bookings = {
-            economy: parseInt(row[3]),
-            business: parseInt(row[4]),
-            firstClass: parseInt(row[5])
-        };
-
-        const prices = {
-            economy: parseFloat(row[6]),
-            business: parseFloat(row[7]),
-            firstClass: parseFloat(row[8])
-        };
-
-        const flight = { airport, aeroplane, bookings, prices };
-        flightDetails.push(formatFlightDetails(flight));
+    invalidFlightData.forEach(row => {
+        const error = validateFlight(row, airports, aeroplanes);
+        if (error !== "Valid flight") {
+            flightErrors.push(formatFlightError(row, error));
+        }
     });
 
-    const outputContent = flightDetails.join('\n');
-    fs.writeFileSync('flights.csv', outputContent, { encoding: 'utf-8' });
+    const outputContent = flightErrors.join('\n');
+    fs.writeFileSync('invalid_flights_report.txt', outputContent, { encoding: 'utf-8' });
 }
-main();
 
+main();
 
 // Usage example
 const airportsData = readCsv('airports.csv');
