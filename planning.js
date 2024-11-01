@@ -7,7 +7,7 @@ function readCsv(filename, delimiter = ',') {
         const rows = fileContent.split('\n');
         const data = [];
 
-        // Skip the header row and process each subsequent row
+        // Skip the header row for each row
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i].trim();
             if (row) {
@@ -45,6 +45,16 @@ class Aeroplane {
         this.firstClassSeats = firstClassSeats;
     }
 }
+
+module.exports = { 
+    readCsv, 
+    createAirports, 
+    createAeroplanes, 
+    validateFlight, 
+    formatFlightError,
+    Airport,
+    Aeroplane
+};
 
 // Create an array of Airport objects from the CSV data
 function createAirports(data) {
